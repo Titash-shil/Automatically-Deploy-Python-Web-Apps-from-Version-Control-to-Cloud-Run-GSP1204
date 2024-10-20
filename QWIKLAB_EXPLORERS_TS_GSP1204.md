@@ -17,9 +17,15 @@
 - ### Run the following Commands in CloudShell
 
 ```
+
+gcloud auth list
+
+gcloud config set project "$(gcloud projects list | awk '/PROJECT_ID/{print $2}' | head -1)"
+
 gcloud services enable \
     cloudbuild.googleapis.com \
     run.googleapis.com
+
 
 cd ~
 
@@ -52,11 +58,14 @@ if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 EOF_END
 
+
 cd ~/helloworld
 
 git init -b main
 
 curl -sS https://webi.sh/gh | sh
+
+
 
 gh auth login
 
@@ -80,10 +89,22 @@ gh repo create hello-world --private
 git remote add origin \
 https://github.com/${GITHUB_USERNAME}/hello-world
 
+
 git push -u origin main
 
 echo -e "\n\nTo see your code, visit this URL:\n \
 https://github.com/${GITHUB_USERNAME}/hello-world/blob/main/main.py \n\n"
+
+
+# ANSI escape codes for bold and green
+BOLD_GREEN="\033[1;32m"
+BOLD_RED="\033[1;32m"
+RESET="\033[0m"
+
+# Print the URL in bold and green
+echo -e "Cloud Run: ${BOLD_GREEN}https://console.cloud.google.com/run${RESET}"
+
+
 ```
 
 - Go to **Clod Run** from [here](https://console.cloud.google.com/run)
@@ -113,13 +134,17 @@ if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 EOF_END
 
+
+
 git add .
 git commit -m "update version to 0.0.1"
 
 git push
 
+
 echo -e "\n\nTo see your code, visit this URL:\n \
 https://github.com/${GITHUB_USERNAME}/hello-world/blob/main/main.py \n\n"
+
 
 echo -e "\n\nOnce the build finishes, visit this URL to see your live application:\n \
 "$(gcloud run services list | awk '/URL/{print $2}' | head -1)" \n\n"
